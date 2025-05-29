@@ -2,117 +2,336 @@
   "info": {
     "_postman_id": "f8a5e9c2-7a6b-4d55-9b0e-d3e8a8c3e457",
     "name": "Meta API Mock",
-    "description": "Collection per testare il mock server delle API Meta",
+    "description": "Collection per testare il mock server delle API Meta per il flusso di approvazione degli Ad Account",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "Aggiorna Ad Account",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"name\": \"Test Ad Account\",\n  \"currency\": \"EUR\",\n  \"spend_cap\": 0.01,\n  \"timezone_id\": 123\n}"
+      "name": "1. Endpoint Principali",
+      "item": [
+        {
+          "name": "1.1 Aggiorna Ad Account (Configurazione Completa)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Ad Account\",\n  \"currency\": \"EUR\",\n  \"spend_cap\": 0.01,\n  \"timezone_id\": 380\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/v18.0/act_123456789",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "v18.0",
+                "act_123456789"
+              ]
+            },
+            "description": "Aggiorna un Ad Account con tutti i parametri configurabili (nome, valuta, spend_cap, timezone_id)"
+          },
+          "response": []
         },
-        "url": {
-          "raw": "http://localhost:3000/v18.0/act_123456789",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "3000",
-          "path": [
-            "v18.0",
-            "act_123456789"
-          ]
+        {
+          "name": "1.2 Ottieni Ad Account (Tutti i campi)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/v18.0/act_123456789?fields=currency,name,account_status,spend_cap,timezone_id",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "v18.0",
+                "act_123456789"
+              ],
+              "query": [
+                {
+                  "key": "fields",
+                  "value": "currency,name,account_status,spend_cap,timezone_id"
+                }
+              ]
+            },
+            "description": "Ottiene tutti i dati disponibili di un Ad Account"
+          },
+          "response": []
         },
-        "description": "Aggiorna un Ad Account con i dati specificati"
-      },
-      "response": []
+        {
+          "name": "1.3 Ottieni solo currency (usato da events-consumer)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/v18.0/act_123456789?fields=currency",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "v18.0",
+                "act_123456789"
+              ],
+              "query": [
+                {
+                  "key": "fields",
+                  "value": "currency"
+                }
+              ]
+            },
+            "description": "Ottiene solo la valuta di un Ad Account - utilizzato da events-consumer per verificare l'aggiornamento della currency"
+          },
+          "response": []
+        },
+        {
+          "name": "1.4 Aggiorna solo valuta Ad Account (retry events-consumer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currency\": \"USD\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/v18.0/act_123456789",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "v18.0",
+                "act_123456789"
+              ]
+            },
+            "description": "Aggiorna solo la valuta di un Ad Account - utilizzato da events-consumer quando rileva un mismatch di currency"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoint principali per testare il flusso di approvazione degli Ad Account"
     },
     {
-      "name": "Ottieni Ad Account",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:3000/v18.0/act_123456789?fields=currency,name,account_status,spend_cap",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "3000",
-          "path": [
-            "v18.0",
-            "act_123456789"
-          ],
-          "query": [
+      "name": "2. Utility e Debug",
+      "item": [
+        {
+          "name": "2.1 Visualizza tutti gli Ad Account",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/debug/accounts",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "debug",
+                "accounts"
+              ]
+            },
+            "description": "Visualizza tutti gli Ad Account memorizzati nel mock server"
+          },
+          "response": []
+        },
+        {
+          "name": "2.2 Crea nuovo Ad Account (primo accesso)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/v18.0/act_new_test_account?fields=id,currency",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "v18.0",
+                "act_new_test_account"
+              ],
+              "query": [
+                {
+                  "key": "fields",
+                  "value": "id,currency"
+                }
+              ]
+            },
+            "description": "Crea automaticamente un nuovo Ad Account semplicemente accedendovi per la prima volta"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoint di utility e debug per gestire il mock server"
+    },
+    {
+      "name": "3. Casi d'uso per Events-Consumer",
+      "item": [
+        {
+          "name": "3.1 Simula intero flusso events-consumer",
+          "item": [
             {
-              "key": "fields",
-              "value": "currency,name,account_status,spend_cap"
+              "name": "Passo 1: Verifica account iniziale",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:3000/v18.0/act_test_flow?fields=currency,name",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3000",
+                  "path": [
+                    "v18.0",
+                    "act_test_flow"
+                  ],
+                  "query": [
+                    {
+                      "key": "fields",
+                      "value": "currency,name"
+                    }
+                  ]
+                },
+                "description": "Verifica lo stato iniziale dell'account (verrà creato automaticamente)"
+              },
+              "response": []
+            },
+            {
+              "name": "Passo 2: Configura account (primo aggiornamento)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"RandomName123\",\n  \"currency\": \"EUR\",\n  \"spend_cap\": 0.01,\n  \"timezone_id\": 380\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/v18.0/act_test_flow",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3000",
+                  "path": [
+                    "v18.0",
+                    "act_test_flow"
+                  ]
+                },
+                "description": "Configurazione iniziale dell'account (simula approveAdAccountRequestEventHandler)"
+              },
+              "response": []
+            },
+            {
+              "name": "Passo 3: Verifica configurazione",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:3000/v18.0/act_test_flow?fields=currency",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3000",
+                  "path": [
+                    "v18.0",
+                    "act_test_flow"
+                  ],
+                  "query": [
+                    {
+                      "key": "fields",
+                      "value": "currency"
+                    }
+                  ]
+                },
+                "description": "Verifica della currency dopo configurazione (simula verifyAccount)"
+              },
+              "response": []
+            },
+            {
+              "name": "Passo 4: Correzione valuta (se necessario)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"currency\": \"EUR\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/v18.0/act_test_flow",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3000",
+                  "path": [
+                    "v18.0",
+                    "act_test_flow"
+                  ]
+                },
+                "description": "Corregge la valuta se necessario (simula updateCurrencyOnMeta)"
+              },
+              "response": []
+            },
+            {
+              "name": "Passo 5: Verifica finale",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:3000/v18.0/act_test_flow?fields=currency,name,spend_cap,timezone_id,account_status",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3000",
+                  "path": [
+                    "v18.0",
+                    "act_test_flow"
+                  ],
+                  "query": [
+                    {
+                      "key": "fields",
+                      "value": "currency,name,spend_cap,timezone_id,account_status"
+                    }
+                  ]
+                },
+                "description": "Verifica finale della configurazione completa"
+              },
+              "response": []
             }
-          ]
-        },
-        "description": "Ottiene i dati di un Ad Account con i campi specificati"
-      },
-      "response": []
-    },
-    {
-      "name": "Visualizza tutti gli Ad Account",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:3000/debug/accounts",
-          "protocol": "http",
-          "host": [
-            "localhost"
           ],
-          "port": "3000",
-          "path": [
-            "debug",
-            "accounts"
-          ]
-        },
-        "description": "Visualizza tutti gli Ad Account memorizzati nel mock server"
-      },
-      "response": []
-    },
-    {
-      "name": "Aggiorna solo valuta Ad Account",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"currency\": \"USD\"\n}"
-        },
-        "url": {
-          "raw": "http://localhost:3000/v18.0/act_123456789",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "3000",
-          "path": [
-            "v18.0",
-            "act_123456789"
-          ]
-        },
-        "description": "Aggiorna solo la valuta di un Ad Account"
-      },
-      "response": []
+          "description": "Simula l'intero flusso di events-consumer per la configurazione di un Ad Account"
+        }
+      ],
+      "description": "Casi d'uso specifici per testare il flusso events-consumer"
     }
   ],
   "variable": [
