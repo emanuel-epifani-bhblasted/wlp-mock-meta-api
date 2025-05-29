@@ -1,0 +1,24 @@
+### Ottieni informazioni su un Ad Account
+GET http://localhost:3000/v18.0/act_123456789?fields=currency,name,account_status,spend_cap
+
+### Aggiorna un Ad Account
+POST http://localhost:3000/v18.0/act_123456789
+Content-Type: application/json
+
+{
+  "name": "Test Ad Account",
+  "currency": "EUR",
+  "spend_cap": 0.01,
+  "timezone_id": 123
+}
+
+### Visualizza tutti gli Ad Account
+GET http://localhost:3000/debug/accounts
+
+### Aggiorna solo la valuta di un Ad Account
+POST http://localhost:3000/v18.0/act_123456789
+Content-Type: application/json
+
+{
+  "currency": "USD"
+}

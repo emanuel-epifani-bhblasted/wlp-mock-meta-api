@@ -1,0 +1,125 @@
+{
+  "info": {
+    "_postman_id": "f8a5e9c2-7a6b-4d55-9b0e-d3e8a8c3e457",
+    "name": "Meta API Mock",
+    "description": "Collection per testare il mock server delle API Meta",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Aggiorna Ad Account",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Test Ad Account\",\n  \"currency\": \"EUR\",\n  \"spend_cap\": 0.01,\n  \"timezone_id\": 123\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/v18.0/act_123456789",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "v18.0",
+            "act_123456789"
+          ]
+        },
+        "description": "Aggiorna un Ad Account con i dati specificati"
+      },
+      "response": []
+    },
+    {
+      "name": "Ottieni Ad Account",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/v18.0/act_123456789?fields=currency,name,account_status,spend_cap",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "v18.0",
+            "act_123456789"
+          ],
+          "query": [
+            {
+              "key": "fields",
+              "value": "currency,name,account_status,spend_cap"
+            }
+          ]
+        },
+        "description": "Ottiene i dati di un Ad Account con i campi specificati"
+      },
+      "response": []
+    },
+    {
+      "name": "Visualizza tutti gli Ad Account",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/debug/accounts",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "debug",
+            "accounts"
+          ]
+        },
+        "description": "Visualizza tutti gli Ad Account memorizzati nel mock server"
+      },
+      "response": []
+    },
+    {
+      "name": "Aggiorna solo valuta Ad Account",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"currency\": \"USD\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/v18.0/act_123456789",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "v18.0",
+            "act_123456789"
+          ]
+        },
+        "description": "Aggiorna solo la valuta di un Ad Account"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ]
+}
