@@ -7,6 +7,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var metaApiRouter = require('./routes/meta-api');
+var testRouter = require('./routes/test-route');
 
 var app = express();
 
@@ -35,6 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/', metaApiRouter);
+app.use('/', testRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -47,7 +49,18 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
+  // Per le richieste API, ritorna un errore JSON formattato
+  if (req.xhr || req.headers.accept.indexOf('json') > -1 || req.path.startsWith('/v18.0/')) {
+    return res.status(err.status || 500).json({
+      error: {
+        message: err.message || 'Internal Server Error',
+        type: err.name || 'ServerError',
+        code: err.status || 500
+      }
+    });
+  }
+
+  // render the error page per richieste non-API
   res.status(err.status || 500);
   res.render('error');
 });
